@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class LobbyConnectorTest {
+public class LobbyConnectorTest {
 
     private static WireMockServer wireMockServer;
     private static String wireMockHost;
