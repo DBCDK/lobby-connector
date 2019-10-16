@@ -1,0 +1,17 @@
+{
+  "id" : "f3f941ef-be0e-30ac-a91b-3096831fad6a",
+  "request" : {
+    "url" : "/v1/api/applicants?state=PENDING&category=dpf",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "body-v1-api-applicants-Tn8BU.json",
+    "headers" : {
+      "Server" : "Payara Micro #badassfish",
+      "Content-Type" : "application/json",
+      "X-Frame-Options" : "SAMEORIGIN"
+    }
+  },
+  "uuid" : "f3f941ef-be0e-30ac-a91b-3096831fad6a"
+}
