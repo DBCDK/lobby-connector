@@ -15,6 +15,9 @@ import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Client;
 
+import java.time.Instant;
+import java.util.Date;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.hamcrest.CoreMatchers.is;
@@ -63,8 +66,8 @@ public class LobbyConnectorTest {
         assertThat(actual[0].getMimetype(), is("text/plain"));
         assertThat(actual[0].getState(), is(ApplicantState.PENDING));
         assertThat(actual[0].getBody(), nullValue());
-        assertThat(actual[0].getTimeOfCreation(), is("1571212956165"));
-        assertThat(actual[0].getTimeOfLastModification(), is("1571212956165"));
+        assertThat(actual[0].getTimeOfCreation(), is(Date.from(Instant.ofEpochMilli(1571212956165L)))); // Yes this is a clonky way to do it but Date(long) is deprecated
+        assertThat(actual[0].getTimeOfLastModification(), is(Date.from(Instant.ofEpochMilli(1571212956165L))));
         assertThat(actual[0].getAdditionalInfo(), nullValue());
         assertThat(actual[0].getBodyLink(), is(wireMockHost + "/v1/api/applicants/1/body"));
     }

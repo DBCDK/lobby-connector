@@ -8,6 +8,7 @@ package dk.dbc.lobby;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Arrays;
+import java.util.Date;
 
 public class Applicant {
 
@@ -16,8 +17,8 @@ public class Applicant {
     private String mimetype;
     private ApplicantState state;
     private byte[] body;
-    private String timeOfCreation;
-    private String timeOfLastModification;
+    private Date timeOfCreation;
+    private Date timeOfLastModification;
     private JsonNode additionalInfo;
     private String bodyLink;
 
@@ -61,19 +62,19 @@ public class Applicant {
         this.body = body;
     }
 
-    public String getTimeOfCreation() {
+    public Date getTimeOfCreation() {
         return timeOfCreation;
     }
 
-    public void setTimeOfCreation(String timeOfCreation) {
+    public void setTimeOfCreation(Date timeOfCreation) {
         this.timeOfCreation = timeOfCreation;
     }
 
-    public String getTimeOfLastModification() {
+    public Date getTimeOfLastModification() {
         return timeOfLastModification;
     }
 
-    public void setTimeOfLastModification(String timeOfLastModification) {
+    public void setTimeOfLastModification(Date timeOfLastModification) {
         this.timeOfLastModification = timeOfLastModification;
     }
 
