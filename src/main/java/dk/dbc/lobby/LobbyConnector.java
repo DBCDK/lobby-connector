@@ -35,6 +35,9 @@ public class LobbyConnector {
     private static final String PATH_GET_APPLICANT = String.format("/v1/api/applicants/{%s}",
             PATH_VARIABLE_APPLICANT_ID);
 
+    private static final int STATUS_CODE_GONE = 410;
+    private static final int STATUS_CODE_UNPROCESSABLE_ENTITY = 422;
+
     private static final RetryPolicy RETRY_POLICY = new RetryPolicy()
             .retryOn(Collections.singletonList(ProcessingException.class))
             .retryIf((Response response) -> response.getStatus() == 404
@@ -154,10 +157,16 @@ public class LobbyConnector {
         final Response.Status actualStatus =
                 Response.Status.fromStatusCode(response.getStatus());
         if (actualStatus != expectedStatus) {
-            throw new LobbyConnectorUnexpectedStatusCodeException(
-                    String.format("Lobby service returned with unexpected status code: %s",
-                            actualStatus),
-                    actualStatus.getStatusCode());
+            if (actualStatus.getStatusCode() == STATUS_CODE_GONE) {
+                throw new LobbyConnectorGoneException("The resource could not be found");
+            } else if (actualStatus.getStatusCode() == STATUS_CODE_UNPROCESSABLE_ENTITY) {
+                throw new LobbyConnectorUnprocessableEntityException("Unknown problem when accessing the backend");
+            } else {
+                throw new LobbyConnectorUnexpectedStatusCodeException(
+                        String.format("Lobby service returned with unexpected status code: %s",
+                                actualStatus),
+                        actualStatus.getStatusCode());
+            }
         }
     }
 
