@@ -66,6 +66,17 @@ public class LobbyConnectorTest {
         assertThat(actual[0].getTimeOfCreation(), is("1571212956165"));
         assertThat(actual[0].getTimeOfLastModification(), is("1571212956165"));
         assertThat(actual[0].getAdditionalInfo(), nullValue());
+        assertThat(actual[0].getBodyLink(), is(wireMockHost + "/v1/api/applicants/1/body"));
+    }
+
+    @Test
+    public void testConstructBodyLink() {
+        Applicant applicant = new Applicant();
+        applicant.setId("test-1");
+
+        connector.constructBodyLink(applicant);
+
+        assertThat(applicant.getBodyLink(), is(wireMockHost + "/v1/api/applicants/test-1/body"));
     }
 
 }

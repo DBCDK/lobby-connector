@@ -30,10 +30,8 @@ public class LobbyConnector {
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LobbyConnector.class);
-    private static final String PATH_VARIABLE_APPLICANT_ID = "id";
     private static final String PATH_GET_APPLICANTS = "/v1/api/applicants";
-    private static final String PATH_GET_APPLICANT = String.format("/v1/api/applicants/{%s}",
-            PATH_VARIABLE_APPLICANT_ID);
+    private static final String PATH_GET_APPLICANT_BODY = "/v1/api/applicants/%s/body";
 
     private static final int STATUS_CODE_GONE = 410;
     private static final int STATUS_CODE_UNPROCESSABLE_ENTITY = 422;
@@ -118,7 +116,13 @@ public class LobbyConnector {
     public Applicant[] getApplicants(Params params) throws LobbyConnectorException {
         final Stopwatch stopwatch = new Stopwatch();
         try {
-            return sendRequest(PATH_GET_APPLICANTS, params, Applicant[].class);
+            final Applicant[] applicants = sendRequest(PATH_GET_APPLICANTS, params, Applicant[].class);
+
+            for (Applicant applicant: applicants) {
+                constructBodyLink(applicant);
+            }
+
+            return applicants;
         } finally {
             logger.log("getApplicants() took {} milliseconds",
                     stopwatch.getElapsedTime(TimeUnit.MILLISECONDS));
@@ -168,6 +172,10 @@ public class LobbyConnector {
                         actualStatus.getStatusCode());
             }
         }
+    }
+
+     void constructBodyLink(Applicant applicant) {
+         applicant.setBodyLink(this.baseUrl + String.format(PATH_GET_APPLICANT_BODY, applicant.getId()));
     }
 
     public void close() {

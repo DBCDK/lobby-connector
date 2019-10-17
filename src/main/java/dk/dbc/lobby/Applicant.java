@@ -19,6 +19,7 @@ public class Applicant {
     private String timeOfCreation;
     private String timeOfLastModification;
     private JsonNode additionalInfo;
+    private String bodyLink;
 
     public String getId() {
         return id;
@@ -84,6 +85,14 @@ public class Applicant {
         this.additionalInfo = additionalInfo;
     }
 
+    public String getBodyLink() {
+        return bodyLink;
+    }
+
+    public void setBodyLink(String bodyLink) {
+        this.bodyLink = bodyLink;
+    }
+
     @Override
     public String toString() {
         return "Applicant{" +
@@ -92,9 +101,10 @@ public class Applicant {
                 ", mimetype='" + mimetype + '\'' +
                 ", state=" + state +
                 ", body=" + Arrays.toString(body) +
-                ", timeOfCreation=" + timeOfCreation +
-                ", timeOfLastModification=" + timeOfLastModification +
+                ", timeOfCreation='" + timeOfCreation + '\'' +
+                ", timeOfLastModification='" + timeOfLastModification + '\'' +
                 ", additionalInfo=" + additionalInfo +
+                ", bodyLink='" + bodyLink + '\'' +
                 '}';
     }
 }
