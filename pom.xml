@@ -39,6 +39,7 @@
         <maven.surefire.version>2.19.1</maven.surefire.version>
         <microprofile.version>1.2</microprofile.version>
         <mockito.version>2.20.1</mockito.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>1.7.25</slf4j.version>
         <stopwatch.version>1.0-SNAPSHOT</stopwatch.version>
         <wiremock.version>2.18.0</wiremock.version>
