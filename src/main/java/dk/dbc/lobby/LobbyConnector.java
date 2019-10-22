@@ -132,8 +132,7 @@ public class LobbyConnector {
         }
     }
 
-    public void createOrReplaceApplicant(Applicant applicant)
-            throws LobbyConnectorUnexpectedStatusCodeException {
+    public void createOrReplaceApplicant(Applicant applicant) throws LobbyConnectorException {
         final Stopwatch stopwatch = new Stopwatch();
         try {
             final HttpPut httpPut = new HttpPut(failSafeHttpClient)
@@ -178,15 +177,22 @@ public class LobbyConnector {
         return entity;
     }
 
+    private String readErrorResponseMessage(Response response) throws LobbyConnectorException {
+        if (response.hasEntity()) {
+            return readResponseEntity(response, String.class);
+        }
+        return "";
+    }
+
     private void assertResponseStatus(Response response, Response.Status... expectedStatus)
-            throws LobbyConnectorUnexpectedStatusCodeException {
+            throws LobbyConnectorException {
         final Response.Status actualStatus =
                 Response.Status.fromStatusCode(response.getStatus());
         if (!Arrays.asList(expectedStatus).contains(actualStatus)) {
             if (actualStatus.getStatusCode() == STATUS_CODE_GONE) {
-                throw new LobbyConnectorGoneException("The resource could not be found");
+                throw new LobbyConnectorGoneException(readErrorResponseMessage(response));
             } else if (actualStatus.getStatusCode() == STATUS_CODE_UNPROCESSABLE_ENTITY) {
-                throw new LobbyConnectorUnprocessableEntityException("Unknown problem when accessing the backend");
+                throw new LobbyConnectorUnprocessableEntityException(readErrorResponseMessage(response));
             } else {
                 throw new LobbyConnectorUnexpectedStatusCodeException(
                         String.format("Lobby service returned with unexpected status code: %s",
@@ -196,7 +202,7 @@ public class LobbyConnector {
         }
     }
 
-     void constructBodyLink(Applicant applicant) {
+    void constructBodyLink(Applicant applicant) {
          applicant.setBodyLink(this.baseUrl + String.format(PATH_GET_APPLICANT_BODY, applicant.getId()));
     }
 
