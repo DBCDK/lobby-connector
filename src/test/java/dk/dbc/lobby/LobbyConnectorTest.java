@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Client;
-
 import java.time.Instant;
 import java.util.Date;
 
@@ -53,7 +52,7 @@ public class LobbyConnectorTest {
     }
 
     @Test
-    public void testGetApplicants() throws LobbyConnectorException {
+    void testGetApplicants() throws LobbyConnectorException {
         LobbyConnector.Params params = new LobbyConnector.Params();
         params.withCategory("dpf");
         params.withState(LobbyConnector.Params.State.PENDING);
@@ -73,7 +72,7 @@ public class LobbyConnectorTest {
     }
 
     @Test
-    public void testConstructBodyLink() {
+    void testConstructBodyLink() {
         Applicant applicant = new Applicant();
         applicant.setId("test-1");
 
