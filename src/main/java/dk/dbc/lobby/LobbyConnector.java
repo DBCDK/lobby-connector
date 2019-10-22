@@ -7,6 +7,7 @@ package dk.dbc.lobby;
 
 import dk.dbc.httpclient.FailSafeHttpClient;
 import dk.dbc.httpclient.HttpGet;
+import dk.dbc.httpclient.HttpPut;
 import dk.dbc.httpclient.PathBuilder;
 import dk.dbc.invariant.InvariantUtil;
 import dk.dbc.util.Stopwatch;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,7 @@ public class LobbyConnector {
     private static final Logger LOGGER = LoggerFactory.getLogger(LobbyConnector.class);
     private static final String PATH_GET_APPLICANTS = "/v1/api/applicants";
     private static final String PATH_GET_APPLICANT_BODY = "/v1/api/applicants/%s/body";
+    private static final String PATH_CREATE_OR_REPLACE_APPLICANT = "/v1/api/applicants/{id}";
 
     private static final int STATUS_CODE_GONE = 410;
     private static final int STATUS_CODE_UNPROCESSABLE_ENTITY = 422;
@@ -129,6 +132,25 @@ public class LobbyConnector {
         }
     }
 
+    public void createOrReplaceApplicant(Applicant applicant)
+            throws LobbyConnectorUnexpectedStatusCodeException {
+        final Stopwatch stopwatch = new Stopwatch();
+        try {
+            final HttpPut httpPut = new HttpPut(failSafeHttpClient)
+                    .withBaseUrl(baseUrl)
+                    .withPathElements(new PathBuilder(PATH_CREATE_OR_REPLACE_APPLICANT)
+                            .bind("id", applicant.getId())
+                            .build())
+                    .withJsonData(applicant);
+
+            final Response response = httpPut.execute();
+            assertResponseStatus(response, Response.Status.CREATED, Response.Status.OK);
+        } finally {
+            logger.log("createOrReplaceApplicant() took {} milliseconds",
+                    stopwatch.getElapsedTime(TimeUnit.MILLISECONDS));
+        }
+    }
+
     private <T> T sendRequest(String basePath, Params params, Class<T> type)
             throws LobbyConnectorException {
         final PathBuilder path = new PathBuilder(basePath);
@@ -156,11 +178,11 @@ public class LobbyConnector {
         return entity;
     }
 
-    private void assertResponseStatus(Response response, Response.Status expectedStatus)
+    private void assertResponseStatus(Response response, Response.Status... expectedStatus)
             throws LobbyConnectorUnexpectedStatusCodeException {
         final Response.Status actualStatus =
                 Response.Status.fromStatusCode(response.getStatus());
-        if (actualStatus != expectedStatus) {
+        if (!Arrays.asList(expectedStatus).contains(actualStatus)) {
             if (actualStatus.getStatusCode() == STATUS_CODE_GONE) {
                 throw new LobbyConnectorGoneException("The resource could not be found");
             } else if (actualStatus.getStatusCode() == STATUS_CODE_UNPROCESSABLE_ENTITY) {
