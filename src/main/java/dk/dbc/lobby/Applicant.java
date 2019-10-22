@@ -5,12 +5,19 @@
 
 package dk.dbc.lobby;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import dk.dbc.jsonb.JSONBContext;
+import dk.dbc.jsonb.JSONBException;
 
 import java.util.Arrays;
 import java.util.Date;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Applicant {
+    private static final JSONBContext JSONB_CONTEXT = new JSONBContext();
 
     private String id;
     private String category;
@@ -19,6 +26,7 @@ public class Applicant {
     private byte[] body;
     private Date timeOfCreation;
     private Date timeOfLastModification;
+    @JsonProperty
     private JsonNode additionalInfo;
     private String bodyLink;
 
@@ -82,8 +90,19 @@ public class Applicant {
         return additionalInfo;
     }
 
+    @JsonIgnore
     public void setAdditionalInfo(JsonNode additionalInfo) {
         this.additionalInfo = additionalInfo;
+    }
+
+    @JsonIgnore
+    public void setAdditionalInfo(Object additionalInfo) throws JSONBException {
+        setAdditionalInfo(JSONB_CONTEXT.marshall(additionalInfo));
+    }
+
+    @JsonIgnore
+    public void setAdditionalInfo(String additionalInfo) throws JSONBException {
+        setAdditionalInfo(JSONB_CONTEXT.getJsonTree(additionalInfo));
     }
 
     public String getBodyLink() {
