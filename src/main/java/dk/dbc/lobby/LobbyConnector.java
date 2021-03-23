@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
+import java.time.Duration;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -39,12 +39,12 @@ public class LobbyConnector {
     private static final int STATUS_CODE_GONE = 410;
     private static final int STATUS_CODE_UNPROCESSABLE_ENTITY = 422;
 
-    private static final RetryPolicy RETRY_POLICY = new RetryPolicy()
-            .retryOn(Collections.singletonList(ProcessingException.class))
-            .retryIf((Response response) -> response.getStatus() == 404
+    private static final RetryPolicy<Response> RETRY_POLICY = new RetryPolicy<Response>()
+            .handle(ProcessingException.class)
+            .handleResultIf(response -> response.getStatus() == 404
                     || response.getStatus() == 500
                     || response.getStatus() == 502)
-            .withDelay(10, TimeUnit.SECONDS)
+            .withDelay(Duration.ofSeconds(10))
             .withMaxRetries(6);
 
     private final FailSafeHttpClient failSafeHttpClient;
