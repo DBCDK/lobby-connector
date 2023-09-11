@@ -1,7 +1,7 @@
 package dk.dbc.lobby;
 
-import dk.dbc.jsonb.JSONBContext;
-import dk.dbc.jsonb.JSONBException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -12,12 +12,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class ApplicantTest {
-    private final JSONBContext jsonbContext = new JSONBContext();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     final String expectedJson =
             "{\"id\":\"42\",\"category\":\"bpf\",\"mimetype\":\"application/xml\",\"state\":\"PENDING\",\"body\":\"aGVsbG8gd29ybGQ=\",\"additionalInfo\":{\"localId\":\"bibID\",\"errors\":[\"err1\",\"err2\"]}}";
 
     @Test
-    void jsonMarshalling() throws JSONBException {
+    void jsonMarshalling() throws JsonProcessingException {
         final AdditionalInfo additionalInfo = new AdditionalInfo();
         additionalInfo.localId = "bibID";
         additionalInfo.errors = Arrays.asList("err1", "err2");
@@ -29,13 +29,13 @@ class ApplicantTest {
         entity.setCategory("bpf");
         entity.setAdditionalInfo(additionalInfo);
         entity.setBody("hello world".getBytes(StandardCharsets.UTF_8));
-        assertThat(jsonbContext.marshall(entity), is(expectedJson));
+        assertThat(MAPPER.writeValueAsString(entity), is(expectedJson));
     }
     
     @Test
-    void jsonUnmarshalling() throws JSONBException {
-        final Applicant unmarshalled = jsonbContext.unmarshall(expectedJson, Applicant.class);
-        assertThat(jsonbContext.marshall(unmarshalled), is(expectedJson));
+    void jsonUnmarshalling() throws JsonProcessingException {
+        final Applicant unmarshalled = MAPPER.readValue(expectedJson, Applicant.class);
+        assertThat(MAPPER.writeValueAsString(unmarshalled), is(expectedJson));
     }
 
     private static class AdditionalInfo {
