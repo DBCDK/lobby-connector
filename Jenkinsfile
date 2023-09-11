@@ -1,6 +1,6 @@
 #!groovy
 
-def workerNode = "devel9"
+def workerNode = "devel11"
 
 pipeline {
 	agent {label workerNode}
