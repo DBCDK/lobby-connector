@@ -11,7 +11,8 @@ pipeline {
 		timestamps()
 	}
 	tools {
-        maven "Maven 3"
+		jdk 'jdk11'
+		maven "Maven 3"
     }
 	stages {
 		stage("clear workspace") {
