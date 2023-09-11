@@ -1,6 +1,6 @@
 #!groovy
 
-def workerNode = "devel9"
+def workerNode = "devel11"
 
 pipeline {
 	agent {label workerNode}
@@ -11,7 +11,8 @@ pipeline {
 		timestamps()
 	}
 	tools {
-        maven "Maven 3"
+		jdk 'jdk11'
+		maven "Maven 3"
     }
 	stages {
 		stage("clear workspace") {

@@ -8,16 +8,16 @@ package dk.dbc.lobby;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import dk.dbc.jsonb.JSONBContext;
-import dk.dbc.jsonb.JSONBException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
 import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Applicant {
-    private static final JSONBContext JSONB_CONTEXT = new JSONBContext();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private String id;
     private String category;
@@ -96,13 +96,13 @@ public class Applicant {
     }
 
     @JsonIgnore
-    public void setAdditionalInfo(Object additionalInfo) throws JSONBException {
-        setAdditionalInfo(JSONB_CONTEXT.marshall(additionalInfo));
+    public void setAdditionalInfo(Object additionalInfo) throws JsonProcessingException {
+        setAdditionalInfo(MAPPER.writeValueAsString(additionalInfo));
     }
 
     @JsonIgnore
-    public void setAdditionalInfo(String additionalInfo) throws JSONBException {
-        setAdditionalInfo(JSONB_CONTEXT.getJsonTree(additionalInfo));
+    public void setAdditionalInfo(String additionalInfo) throws JsonProcessingException {
+        setAdditionalInfo(MAPPER.readValue(additionalInfo, JsonNode.class));
     }
 
     public String getBodyLink() {
